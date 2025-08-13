@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class DrawerScreen extends StatefulWidget {
   const DrawerScreen({super.key});
@@ -10,9 +9,20 @@ class DrawerScreen extends StatefulWidget {
 
 class _DrawerScreenState extends State<DrawerScreen> {
 
-  Widget buildHeader(BuildContext context) => Container(
-    padding: EdgeInsets.only(
-      top: MediaQuery.of(context).padding.top
+  Widget buildHeader(BuildContext context) => Material(
+    color: Colors.blue.shade700,
+    child: InkWell(
+      onTap: (){},
+      child: SizedBox(
+        width: double.infinity,
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 24 + MediaQuery.of(context).padding.top,
+            bottom: 24
+          ),
+          child: const FlutterLogo(),
+        ),
+      ),
     ),
   );
 
