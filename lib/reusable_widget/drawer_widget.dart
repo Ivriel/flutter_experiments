@@ -2,14 +2,14 @@ import 'package:experiments/screens/pages/location_getter_page.dart';
 import 'package:experiments/screens/pages/image_picker_page.dart';
 import 'package:flutter/material.dart';
 
-class DrawerScreen extends StatefulWidget {
-  const DrawerScreen({super.key});
+class DrawerWidget extends StatefulWidget {
+  const DrawerWidget({super.key});
 
   @override
-  State<DrawerScreen> createState() => _DrawerScreenState();
+  State<DrawerWidget> createState() => _DrawerWidgetState();
 }
 
-class _DrawerScreenState extends State<DrawerScreen> {
+class _DrawerWidgetState extends State<DrawerWidget> {
 
   Widget buildHeader(BuildContext context) => Material(
     color: Colors.blue.shade700,

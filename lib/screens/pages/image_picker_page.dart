@@ -121,10 +121,15 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const DrawerScreen(),
+      endDrawer: const DrawerWidget(),
       appBar: AppBar(
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(), 
+            icon: const Icon(Icons.search)
+          )
+        ],
         title: const Text("Image Picker in Flutter",style: TextStyle(fontWeight: FontWeight.bold),),
       ),
       body: Column(
@@ -219,7 +224,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
             right: 8,
             child: FloatingActionButton(
               onPressed: (){
-                _scaffoldKey.currentState?.openDrawer();
+                _scaffoldKey.currentState?.openEndDrawer();
               },
               tooltip: 'Buka drawer',
               heroTag: "menu_fab",
