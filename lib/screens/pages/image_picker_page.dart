@@ -1,19 +1,19 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:experiments/screens/drawer.dart';
+import 'package:experiments/reusable_widget/drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
-class ImagePickerScreen extends StatefulWidget {
-  const ImagePickerScreen({super.key});
+class ImagePickerPage extends StatefulWidget {
+  const ImagePickerPage({super.key});
 
   @override
-  State<ImagePickerScreen> createState() => _ImagePickerScreenState();
+  State<ImagePickerPage> createState() => _ImagePickerPageState();
 }
 
-class _ImagePickerScreenState extends State<ImagePickerScreen> {
+class _ImagePickerPageState extends State<ImagePickerPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); //global key buat kontrol drawer ( buka dari floating button dan drawernya di page lain)
 
   @override
