@@ -1,3 +1,5 @@
+import 'package:experiments/screens/pages/location_getter_page.dart';
+import 'package:experiments/screens/pages/image_picker_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -33,13 +35,17 @@ class _DrawerScreenState extends State<DrawerScreen> {
       children: [
         ListTile(
           leading: const Icon(Icons.home_outlined),
-          title: const Text("Home"),
-          onTap: (){},
+          title: const Text("Location Getter"),
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> const LocationGetterPage()));
+          },
         ),
         ListTile(
           leading: const Icon(Icons.favorite_border),
-          title: const Text("Favourites"),
-          onTap: (){},
+          title: const Text("Image Picker"),
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> const ImagePickerPage()));
+          },
         ),
          ListTile(
           leading: const Icon(Icons.workspaces_outline),

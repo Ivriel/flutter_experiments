@@ -19,8 +19,8 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
   @override
   void initState() {
     super.initState();
-    getLocation();
-    pickImageFromCamera();
+    // getLocation();
+    // pickImageFromCamera();
   }
 
   File? _image;
@@ -177,6 +177,10 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
             },
             child: const Text("Delete Image")
           ),
+          ElevatedButton(
+            onPressed: pickImageFromCamera,
+            child: const Text("Take Phoyo")
+          ),
           // Refresh location button
           ElevatedButton(
             onPressed: getLocation,
@@ -194,6 +198,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
                 pickImageFromCamera();
             },
             tooltip: 'Ambil gambar dari kamera',
+            heroTag: "camera_fab",
             child: const Icon(Icons.camera_alt)
           ),
           ),
@@ -205,6 +210,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
                 pickImageFromGalery();
               },
               tooltip: 'Ambil gambar dari galeri',
+              heroTag: "gallery_fab",
               child: const Icon(Icons.image),
             ),
           ),
@@ -216,6 +222,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
                 _scaffoldKey.currentState?.openDrawer();
               },
               tooltip: 'Buka drawer',
+              heroTag: "menu_fab",
               child: const Icon(Icons.menu),
             ),
           )
