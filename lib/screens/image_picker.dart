@@ -1,10 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:experiments/screens/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:location/location.dart';
 
 class ImagePickerScreen extends StatefulWidget {
   const ImagePickerScreen({super.key});
@@ -14,23 +12,20 @@ class ImagePickerScreen extends StatefulWidget {
 }
 
 class _ImagePickerScreenState extends State<ImagePickerScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); //global key buat kontrol drawer ( buka dari floating button dan drawernya di page lain)
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); //PENTING. ini global key buat kontrol drawer ( buka dari app bar tapi end drawer widgetnya ada di page lain karena itu custom)
+  String _latitude = "";
+  String _longitude = "";
 
   @override
   void initState() {
     super.initState();
-    getLocation();
+    _getCurrentLocation();
     pickImageFromCamera();
   }
 
   File? _image;
   final _picker = ImagePicker();
   
-  // Location variables
-  double? _latitude;
-  double? _longitude;
-  String _locationStatus = "Getting location...";
-
   pickImageFromCamera() async {
    final pickedFile = await  _picker.pickImage(source: ImageSource.camera); // nullable
 
@@ -42,7 +37,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
-  
   pickImageFromGalery() async {
    final pickedFile = await  _picker.pickImage(source: ImageSource.gallery); // nullable
 
@@ -54,76 +48,56 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
-  getLocation() async {
-    log("🔍 Starting getLocation() function...");
-    setState(() {
-      _locationStatus = "Starting location request...";
-    });
-    
-    try {
-      Location location = Location();
-      log("📍 Location object created");
+ Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-      // Check if location service is enabled
-      bool serviceEnabled = await location.serviceEnabled();
-      log("🔧 Location service enabled: $serviceEnabled");
-      
-      if(!serviceEnabled) {
-        log("⚠️ Requesting location service...");
-        serviceEnabled = await location.requestService();
-        if(!serviceEnabled) {
-          log("❌ Location service request failed");
-          setState(() {
-            _locationStatus = "Location service disabled";
-          });
-          return;
-        }
-      }
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
 
-      // Check location permission
-      PermissionStatus permissionGranted = await location.hasPermission();
-      log("🔐 Location permission status: $permissionGranted");
-      
-      if(permissionGranted == PermissionStatus.denied) {
-        log("⚠️ Requesting location permission...");
-        permissionGranted = await location.requestPermission();
-        if(permissionGranted != PermissionStatus.granted) {
-          log("❌ Location permission denied");
-          setState(() {
-            _locationStatus = "Location permission denied";
-          });
-          return;
-        }
-      }
-
-      log("✅ Getting current location...");
-      LocationData locationData = await location.getLocation();
-      log("📍 Location data received: ${locationData.latitude}, ${locationData.longitude}");
-      
-      setState(() {
-        _latitude = locationData.latitude;
-        _longitude = locationData.longitude;
-        _locationStatus = "Location obtained successfully";
-      });
-      
-      log("✅ Latitude: ${locationData.latitude}, Longitude: ${locationData.longitude}");
-      
-    } catch (e) {
-      log("❌ Error in getLocation: $e");
-      setState(() {
-        _locationStatus = "Error getting location: $e";
-      });
-      log("Error getting location: $e");
+      return Future.error('Location services are disabled.');
     }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      _latitude = position.latitude.toString();
+      _longitude = position.longitude.toString();
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const DrawerScreen(),
+      endDrawer: const DrawerScreen(),
       appBar: AppBar(
         centerTitle: true,
+        actions:  [
+          const Icon(Icons.search),
+          IconButton(
+            onPressed: ()=> _scaffoldKey.currentState?.openEndDrawer(), 
+            icon: const Icon(Icons.menu)
+          )
+        ],
         automaticallyImplyLeading: false,
         title: const Text("Image Picker in Flutter",style: TextStyle(fontWeight: FontWeight.bold),),
       ),
@@ -138,20 +112,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.blue.shade200),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Location Status: $_locationStatus",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                if (_latitude != null && _longitude != null) ...[
-                  Text("Latitude: ${_latitude!.toStringAsFixed(6)}"),
-                  Text("Longitude: ${_longitude!.toStringAsFixed(6)}"),
-                ],
-              ],
-            ),
+            child: const Text("test")
           ),
           // Image display
           Center(
@@ -177,9 +138,10 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
             },
             child: const Text("Delete Image")
           ),
-          // Refresh location button
+          Text("Latitude $_latitude"),
+          Text("Longitude $_longitude"),
           ElevatedButton(
-            onPressed: getLocation,
+            onPressed: _getCurrentLocation, 
             child: const Text("Refresh Location")
           )
         ],
@@ -206,17 +168,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
               },
               tooltip: 'Ambil gambar dari galeri',
               child: const Icon(Icons.image),
-            ),
-          ),
-             Positioned(
-            bottom: 170,
-            right: 8,
-            child: FloatingActionButton(
-              onPressed: (){
-                _scaffoldKey.currentState?.openDrawer();
-              },
-              tooltip: 'Buka drawer',
-              child: const Icon(Icons.menu),
             ),
           )
         ]

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class DrawerScreen extends StatefulWidget {
   const DrawerScreen({super.key});
@@ -12,7 +11,36 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   Widget buildHeader(BuildContext context) => Container(
     padding: EdgeInsets.only(
-      top: MediaQuery.of(context).padding.top
+      top: MediaQuery.of(context).padding.top + 20,
+      bottom: 20,
+    ),
+    child: Column(
+      children: [
+        CircleAvatar(
+          radius: 40,
+          backgroundColor: Colors.blue.shade100,
+          child: Icon(
+            Icons.person,
+            size: 40,
+            color: Colors.blue.shade700,
+          ),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          "User Profile",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const Text(
+          "user@example.com",
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+          ),
+        ),
+      ],
     ),
   );
 
@@ -24,33 +52,53 @@ class _DrawerScreenState extends State<DrawerScreen> {
         ListTile(
           leading: const Icon(Icons.home_outlined),
           title: const Text("Home"),
-          onTap: (){},
+          onTap: (){
+            Navigator.pop(context);
+          },
         ),
         ListTile(
           leading: const Icon(Icons.favorite_border),
           title: const Text("Favourites"),
-          onTap: (){},
+          onTap: (){
+            Navigator.pop(context);
+          },
         ),
          ListTile(
           leading: const Icon(Icons.workspaces_outline),
           title: const Text("Workflow"),
-          onTap: (){},
+          onTap: (){
+            Navigator.pop(context);
+          },
         ),
          ListTile(
           leading: const Icon(Icons.update),
           title: const Text("Updates"),
-          onTap: (){},
+          onTap: (){
+            Navigator.pop(context);
+          },
         ),
         const Divider(color: Colors.black54),
          ListTile(
           leading: const Icon(Icons.account_tree_outlined),
           title: const Text("Plugins"),
-          onTap: (){},
+          onTap: (){
+            Navigator.pop(context);
+          },
         ),
          ListTile(
           leading: const Icon(Icons.notifications),
           title: const Text("Notifications"),
-          onTap: (){},
+          onTap: (){
+            Navigator.pop(context);
+          },
+        ),
+        const SizedBox(height: 20),
+        ListTile(
+          leading: const Icon(Icons.logout, color: Colors.red),
+          title: const Text("Logout", style: TextStyle(color: Colors.red)),
+          onTap: (){
+            Navigator.pop(context);
+          },
         ),
       ],
     ),
